@@ -1,6 +1,7 @@
 #importamos la librería para usar su lenguaje en nuestro código.
 import pygame
-from Juego.gameclass import GameObject, Character
+import random # Vamos a usar random.randint de esta librería para generar aleatoriamente posición de rocas en el código
+from Juego.gameclass import GameObject, Character, Obstacle, TypeObstacle
 
 #Pygame setup
 #Pygame inicialización
@@ -11,9 +12,20 @@ height = 600
 screen = pygame.display.set_mode((width, height)) #Alternativa ocupar pantalla: screen = pygame.FULLSCREEN
 clock = pygame.time.Clock()
 
+#Comenzaría a crear los GameObjects
+game_objects_list = [] #en esta lista incorporaré los elementos
+
 # Cargar el personaje/s del juego
 player = Character("player", screen, width/2, height/2)
-##player2 = GameObject("player2", screen, width/2 - 30, height/2, "Owlet_Monster.png") segundo jugador
+game_objects_list.append(player)
+
+# Añadir un número de rocas
+num_rocks = 4
+for id_rock in range(num_rocks):
+    rock = Obstacle(f"rock{id_rock}", screen, random.randint(100, width -100), random.randint(50, width -200), "rock.png")
+    game_objects_list.append(rock)
+
+
 # Control del movimiento con tecla apretada:
 player_move = False
 key_press = "" #¿Qué tecla he apretado?
@@ -79,6 +91,7 @@ while running:
                 player.move_down(4)
 
         if event.type == pygame.KEYUP:
+            #print("Tecla levantada")
             player_move = False  #para que salga del bucle del movimiento al levantar la tecla
 
         if event.type == pygame.QUIT: # si ocurre este evento se refiere a que sea pulsada la X de cierre de ventana
@@ -87,8 +100,9 @@ while running:
     # Color elegido para la ventana mientras se mantenga en el bucle de funcionamiento
     screen.fill([188,170,164]) # códigos numéricos de color preestablecidos. Buscar referencia del color en "material colours" en google.
 
-    # Pintamos al héroe en la pantalla
-    screen.blit(player.get_image(), player.get_rect())
+    # Pintamos los objetos
+    for game_object in game_objects_list:
+        screen.blit(game_object.get_image(), game_object.get_rect())
 
     ##screen.blit(player2.get_image(), player2.get_rect()) para representar al segundo jugador
 
