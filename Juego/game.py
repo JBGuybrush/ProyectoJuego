@@ -22,7 +22,15 @@ game_objects_list.append(player)
 # Añadir un número de rocas
 num_rocks = 4
 for id_rock in range(num_rocks):
-    rock = Obstacle(f"rock{id_rock}", screen, random.randint(100, width -100), random.randint(50, width -200), "rock.png")
+    rock = Obstacle(f"rock{id_rock}", screen, random.randint(50, width -15), random.randint(50, height -15), "rock.png")
+    # Comprobar si el nuevo GameObject colisiona con todos los anteriores
+    for id in range(len(game_objects_list)):
+        #Comprobamos la colisión para rock y el id
+        if (game_objects_list[id].get_rect().colliderect(rock.get_rect())):
+            rock = Obstacle(f"rock{id_rock}", screen, random.randint(50, width -15), random.randint(50, height -15),
+                            "rock.png")
+            id_rock = 0
+    # El nuevo objeto no colisiona
     game_objects_list.append(rock)
 
 
