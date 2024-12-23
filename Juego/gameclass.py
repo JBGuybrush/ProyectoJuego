@@ -73,6 +73,10 @@ class Character(GameObject): # sería la clase Child que hereda de la parent (Ga
     def perder_vida (self, damage = 1):
         self.__vida -= damage #para restar el valor
 
+# Función para la comprobación de colisión entre objetos
+
+    def __comprobar_colision(self,lista_gameobjects): ###VAMOS POR AQUÍ
+
 # Class Obstacle
 # Atributo:
 # - damage (daño)

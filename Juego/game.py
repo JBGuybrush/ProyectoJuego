@@ -1,7 +1,7 @@
 #importamos la librería para usar su lenguaje en nuestro código.
 import pygame
 import random # Vamos a usar random.randint de esta librería para generar aleatoriamente posición de rocas en el código
-from Juego.gameclass import GameObject, Character, Obstacle, TypeObstacle
+from Juego.gameclass import Character, Obstacle
 
 #Pygame setup
 #Pygame inicialización
