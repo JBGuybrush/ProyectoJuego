@@ -1,6 +1,9 @@
 #importamos la librería para usar su lenguaje en nuestro código.
 import pygame
 import random # Vamos a usar random.randint de esta librería para generar aleatoriamente posición de rocas en el código
+
+from pygame.constants import K_ESCAPE
+
 from Juego.gameclass import Character, Obstacle
 
 #Pygame setup
@@ -58,7 +61,7 @@ while running:
         if event.type == pygame.KEYDOWN: #tomar y registrar al momento la letra pulsada por el usuario
             #print("Tecla apretada")
             if event.unicode == "w":
-                player.move_up() #si no pongo un número en el paréntesis moverá -5 en y por defecto.
+                player.move_character_up(game_objects_list) #si no pongo un número en el paréntesis moverá -5 en y por defecto.
                 key_press = "w"
                 player_move = True
             elif event.unicode == "d":
@@ -68,7 +71,8 @@ while running:
                     imgFlip = pygame.transform.flip(player.get_image(),True,False)
                     player_moving_left = False
                     player.set_image(imgFlip)
-                player.move_right()
+                #player.move_right() lo suprimimos para implementar la siguiente función que hemos definido:
+                player.move_character_right(game_objects_list)
                 key_press = "d"
                 player_move = True
             elif event.unicode == "a":
@@ -79,11 +83,11 @@ while running:
                     player_moving_right = False
                     player.set_image(imgFlip)
                 ##
-                player.move_left()
+                player.move_character_left(game_objects_list)
                 key_press = "a"
                 player_move = True
             elif event.unicode == "s":
-                player.move_down()
+                player.move_character_down(game_objects_list)
                 key_press = "s"
                 player_move = True
 
@@ -102,8 +106,10 @@ while running:
             #print("Tecla levantada")
             player_move = False  #para que salga del bucle del movimiento al levantar la tecla
 
-        if event.type == pygame.QUIT: # si ocurre este evento se refiere a que sea pulsada la X de cierre de ventana
+        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE: # salir pulsando X de cierre o ESC.
             running = False #en caso de este evento sale del bucle con False
+
+
 
     # Color elegido para la ventana mientras se mantenga en el bucle de funcionamiento
     screen.fill([188,170,164]) # códigos numéricos de color preestablecidos. Buscar referencia del color en "material colours" en google.

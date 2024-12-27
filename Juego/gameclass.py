@@ -67,15 +67,42 @@ class Character(GameObject): # sería la clase Child que hereda de la parent (Ga
     # Constructor
     def __init__(self, tag, screen, pos_x=0, pos_y=0, image="Pink_Monster.png", vida=3):
         super().__init__(tag, screen, pos_x, pos_y, image) # el super() añadirá el nuevo atributo vida a los del Parent
+
         # establezco el nuevoa tributo como privado con __
         self.__vida = vida
 
     def perder_vida (self, damage = 1):
         self.__vida -= damage #para restar el valor
 
-# Función para la comprobación de colisión entre objetos
+# Función para la comprobación de colisión entre objetos. Toma como referencia al character para comprobar, no al mapa.
+    def __comprobar_colision(self,game_objects_list):
+        # Debo excluir de la comprobación al jugador que está en posición 0
+        # OJO con el tema de la posición 0
+        for i in range (1, len(game_objects_list)):
+            # si colisiona no puedo moverlo
+            if game_objects_list[i].get_rect().colliderect(game_objects_list[0].get_rect()):
+                return True
+        return False
 
-    def __comprobar_colision(self,lista_gameobjects): ###VAMOS POR AQUÍ
+    def move_character_right(self, game_objects_list, x=5):
+        super().move_right(x)
+        if self.__comprobar_colision(game_objects_list) == True:
+            super().move_left(x)
+
+    def move_character_left(self, game_objects_list, x=5):
+        super().move_left(x)
+        if self.__comprobar_colision(game_objects_list) == True:
+            super().move_right(x)
+
+    def move_character_up(self, game_objects_list, y=5):
+        super().move_up(y)
+        if self.__comprobar_colision(game_objects_list) == True:
+            super().move_down(y)
+
+    def move_character_down(self, game_objects_list, y=5):
+        super().move_down(y)
+        if self.__comprobar_colision(game_objects_list) == True:
+            super().move_up(y)
 
 # Class Obstacle
 # Atributo:
