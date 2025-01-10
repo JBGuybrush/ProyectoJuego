@@ -12,7 +12,7 @@ class GameObject:
     #constructor
     def __init__(self, tag, screen, pos_x=0, pos_y=0, image="Pink_Monster.png"):
 # queda por defecto definida posición x=0 e y=0 e imagen de monstruo rosa si no se concreta otra ahora a continuación en el código
-        print(f"Creando el objeto: {tag}") #así nos aparece un mensaje con el nombre que le hallamos dado en tag.
+        print(f"Creando el objeto: {tag}") #así nos aparece un mensaje en consola con el nombre que le hallamos dado en tag.
 
         #vamos a crear los ATRIBUTOS DE LA INSTANCIA:
         self.tag = tag
@@ -47,7 +47,7 @@ class GameObject:
         if (self.__rect.bottom+y) < self.__screen.get_height():
             self.__rect.move_ip(0, y)
 
-    #Función que devuelve la imagen del GameObject porque sino no puede alcanzar al img el archivo del juego
+    #Función que devuelve la imagen del GameObject porque si no no puede alcanzar al img el archivo del juego
     def get_image(self):
         return self.__img
 
@@ -68,7 +68,7 @@ class Character(GameObject): # sería la clase Child que hereda de la parent (Ga
     def __init__(self, tag, screen, pos_x=0, pos_y=0, image="Pink_Monster.png", vida=3):
         super().__init__(tag, screen, pos_x, pos_y, image) # el super() añadirá el nuevo atributo vida a los del Parent
 
-        # establezco el nuevoa tributo como privado con __
+        # establezco el nuevo atributo como privado con __
         self.__vida = vida
 
     def perder_vida (self, damage = 1):

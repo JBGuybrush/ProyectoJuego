@@ -16,7 +16,7 @@ screen = pygame.display.set_mode((width, height)) #Alternativa ocupar pantalla: 
 clock = pygame.time.Clock()
 
 #Comenzaría a crear los GameObjects
-game_objects_list = [] #en esta lista incorporaré los elementos
+game_objects_list = [] #en esta lista se incorporarán los elementos
 
 # Cargar el personaje/s del juego
 player = Character("player", screen, width/2, height/2)
@@ -55,56 +55,39 @@ player_moving_right = False
 running = True
 
 while running:
+
+    keys = pygame.key.get_pressed() # Metodo de Pygame que devuelve el estado de las teclas para generar movimiento continuo.
     # comienzas a llamar a eventos que van a ocurrir mientras funciona
     # .get le pide que tome todos los eventos que van ocurriendo dentro del bucle infinito
     for event in pygame.event.get(): #condicionas el comportamiento con los eventos que marcas a continuación
-        if event.type == pygame.KEYDOWN: #tomar y registrar al momento la letra pulsada por el usuario
-            #print("Tecla apretada")
-            if event.unicode == "w":
-                player.move_character_up(game_objects_list) #si no pongo un número en el paréntesis moverá -5 en y por defecto.
-                key_press = "w"
-                player_move = True
-            elif event.unicode == "d":
-                # Control de la orientación de la imagen en el movimiento
-                player_moving_right = True
-                if player_moving_left:
-                    imgFlip = pygame.transform.flip(player.get_image(),True,False)
-                    player_moving_left = False
-                    player.set_image(imgFlip)
-                #player.move_right() lo suprimimos para implementar la siguiente función que hemos definido:
-                player.move_character_right(game_objects_list)
-                key_press = "d"
-                player_move = True
-            elif event.unicode == "a":
-                ## Control de la orientación de la imagen en el movimiento
-                player_moving_left = True
-                if player_moving_right:
-                    imgFlip = pygame.transform.flip(player.get_image(),True,False)
-                    player_moving_right = False
-                    player.set_image(imgFlip)
-                ##
-                player.move_character_left(game_objects_list)
-                key_press = "a"
-                player_move = True
-            elif event.unicode == "s":
-                player.move_character_down(game_objects_list)
-                key_press = "s"
-                player_move = True
+        #según la letra pulsada generaremos un movimiento en nuestro character
 
-# Vamos a obligar al código a pasar por aquí en bucle para que el movimiento sea más fluido por la pantalla.
-        if player_move:
-            if key_press == "w":
-                player.move_up(4)
-            if key_press == "d":
-                player.move_right(4)
-            if key_press == "a":
-                player.move_left(4)
-            if key_press == "s":
-                player.move_down(4)
+        if keys[pygame.K_w]:  # Si la tecla "w" es presionada
+            player.move_character_up(game_objects_list, 10) #si no pusiera un número en el paréntesis moverá -5 en y por defecto, elijo 10 para que vaya más fluido.
+
+        if keys[pygame.K_d]:  # Si la tecla "d" es presionada
+            player.move_character_right(game_objects_list, 10)  # Le pasamos el game_objects_list para la comprobación de colisiones entre objetos
+            # Control de la orientación de la imagen en el movimiento dependiendo de su movimiento previo
+            if player_moving_left:
+                imgFlip = pygame.transform.flip(player.get_image(), True, False)
+                player.set_image(imgFlip)
+                player_moving_right = True
+                player_moving_left = False
+
+        if keys[pygame.K_a]:  # Si la tecla "a" es presionada
+            player.move_character_left(game_objects_list, 10)
+            # Control de la orientación de la imagen en el movimiento dependiendo de su movimiento previo
+            if not player_moving_left:
+                imgFlip = pygame.transform.flip(player.get_image(), True, False)
+                player_moving_left = True
+                player_moving_right = False
+                player.set_image(imgFlip)
+
+        if keys[pygame.K_s]:  # Si la tecla "s" es presionada, movemos hacia abajo.
+            player.move_character_down(game_objects_list, 10)
 
         if event.type == pygame.KEYUP:
-            #print("Tecla levantada")
-            player_move = False  #para que salga del bucle del movimiento al levantar la tecla
+            print("Tecla levantada")
 
         if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE: # salir pulsando X de cierre o ESC.
             running = False #en caso de este evento sale del bucle con False
