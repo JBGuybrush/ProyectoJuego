@@ -8,6 +8,7 @@
 import pygame
 from enum import Enum
 
+
 class GameObject:
     #constructor
     def __init__(self, tag, screen, pos_x=0, pos_y=0, image="Pink_Monster.png"):
@@ -23,7 +24,7 @@ class GameObject:
         #ATRIBUTOS PRIVADOS para la carga de imágenes sin tener que escribir en el código del juego cada una
         self.__img = pygame.image.load(self.image)
             #la doble __ la hace privada
-        self.__img.convert()
+        #self.__img.convert() #no es necesario porque la he incorporado a una función del GameObject más abajo.
         self.__rect = self.__img.get_rect()
         self.__screen = screen
         self.__rect.center = (self.pos_x, self.pos_y) #para que tome la posición que le pidamos en el código y muestre ahí la imagen
@@ -55,34 +56,34 @@ class GameObject:
     def set_image(self, image):
         self.__img = image
 
+    # defino una función independiente para las puertas porque si no deja de funcionar el ImgFlip en el player.
+    def set_image_door(self, image):
+        self.__img = pygame.image.load(self.image)
+        self.__img.convert()
+
     #Función que devuelve el rectángulo de la imagen para llamarla y no poner esta línea tampoco en el código del juego
     def get_rect(self):
         return self.__rect
 
-# Class Character
-# Atributo nuevo:
-# - vida
+# Class Character para nuestro personaje.
 
 class Character(GameObject): # sería la clase Child que hereda de la parent (GameObject)
     # Constructor
     def __init__(self, tag, screen, pos_x=0, pos_y=0, image="Pink_Monster.png", vida=3):
         super().__init__(tag, screen, pos_x, pos_y, image) # el super() añadirá el nuevo atributo vida a los del Parent
 
-        # establezco el nuevo atributo como privado con __
-        self.__vida = vida
-
-    def perder_vida (self, damage = 1):
-        self.__vida -= damage #para restar el valor
 
 # Función para la comprobación de colisión entre objetos. Toma como referencia al character para comprobar, no al mapa.
-    def __comprobar_colision(self,game_objects_list):
-        # Debo excluir de la comprobación al jugador que está en posición 0
-        # OJO con el tema de la posición 0
-        for i in range (1, len(game_objects_list)):
-            # si colisiona no puedo moverlo
-            if game_objects_list[i].get_rect().colliderect(game_objects_list[0].get_rect()):
+
+    def __comprobar_colision(self, game_objects_list):
+        for obj in game_objects_list:
+            if obj is not self and obj.get_rect().colliderect(self.get_rect()):
+                if isinstance(obj, Door) and obj.is_open: #no colisionar con puerta abierta
+                  continue
+                elif isinstance(obj, Key):
+                    continue
                 return True
-        return False
+        return False # si colisiona con algo que no sea una puerta abierta se detendrá
 
     def move_character_right(self, game_objects_list, x=5):
         super().move_right(x)
@@ -120,6 +121,41 @@ class Obstacle(GameObject):
         else:
             self.__damage = 0
 
-# Class Item
-# Atributo nuevo:
-# - vida
+class TypeDoor(Enum):
+    ENTRANCE = 1
+    EXIT = 2
+
+class Door(GameObject):
+    def __init__(self, tag, screen, pos_x=0, pos_y=0, image="doorshut.png", door_type=TypeDoor.ENTRANCE, is_open=False):
+        super().__init__(tag, screen, pos_x, pos_y, image)
+        self.door_type = door_type
+        self.is_open = is_open
+        self.animation_frames = []
+        self.current_frame_index = 0
+        self.animation_complete = False
+        self.update_image()
+
+    def open_door(self):
+        self.is_open = True
+        self.update_image()
+
+    def close_door(self):
+        self.is_open = False
+        self.update_image()
+
+    def update_image(self):
+        if self.is_open:
+            self.set_image_door("dooropen.png")
+        else:
+            self.set_image_door("doorshut.png")
+            self.__img = pygame.image.load(self.image)
+            self.__img.convert()
+
+
+class Key(GameObject):
+    def __init__(self, tag, screen, pos_x=None, pos_y=None, image="lever.png", used=False):
+        super().__init__(tag, screen, pos_x, pos_y, image)
+        self.used = used
+
+    def use(self):
+        self.used = True
