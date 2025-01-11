@@ -8,7 +8,6 @@
 import pygame
 from enum import Enum
 
-
 class GameObject:
     #constructor
     def __init__(self, tag, screen, pos_x=0, pos_y=0, image="Pink_Monster.png"):
@@ -143,14 +142,12 @@ class Door(GameObject):
         self.is_open = False
         self.update_image()
 
+#Definimos una función para que cambie la imagen de la puerta al ser abierta ##no consigo que funcione##
     def update_image(self):
         if self.is_open:
             self.set_image_door("dooropen.png")
         else:
             self.set_image_door("doorshut.png")
-            self.__img = pygame.image.load(self.image)
-            self.__img.convert()
-
 
 class Key(GameObject):
     def __init__(self, tag, screen, pos_x=None, pos_y=None, image="lever.png", used=False):
