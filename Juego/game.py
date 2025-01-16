@@ -9,17 +9,17 @@ from Juego.gameclass import Character, Obstacle, TypeObstacle, Door, TypeDoor, K
 #Pygame setup
 #Pygame inicialización
 pygame.init() #esto marca el punto de arranque de la librería Pygame
-#Creo una ventana
+#Creo una ventana de 800x600
 width = 800
 height = 600
 screen = pygame.display.set_mode((width, height)) #Alternativa ocupar pantalla: screen = pygame.FULLSCREEN
 clock = pygame.time.Clock()
 
-# Cargamos una imagen para el fondo
+# Cargamos una imagen para el fondo y la ajustamos al tamaño de ventana
 background = pygame.image.load("tile.png")
 background = pygame.transform.scale(background, (width, height))
 
-#Comenzaría a crear los GameObjects
+#Lista donde se agruparán los GameObjects
 game_objects_list = [] #en esta lista se incorporarán los elementos
 
 # Cargar el personaje/s del juego
@@ -27,7 +27,7 @@ player = Character("player", screen,70, 100) #marco esa posición en (x,y) para 
 game_objects_list.append(player)
 
 
-# Añadir una valla de entrada y una de salida al mapa
+# Añadir una valla de entrada y una de salida al mapa en posiciones opuestas
 entrance_door = Door("entrada", screen, 130, 100, "dooropen.png", TypeDoor.ENTRANCE, is_open=True)
 exit_door = Door("salida", screen, width - 80, height - 180, "doorshut.png", TypeDoor.EXIT, is_open=False)
 game_objects_list.append(entrance_door)
@@ -42,7 +42,7 @@ key_collected = False
 puerta_alcanzada = False
 
 # Por último, añadimos un número de rocas al mapa, para que haga al comprobación de si colisiona con el resto de rectángulos antes de aparecer.
-num_rocks = 10
+num_rocks = 5
 for id_rock in range(num_rocks):
     rock = Obstacle(f"rock{id_rock}", screen, random.randint(20, width -20), random.randint(20, height -20), "rock.png", TypeObstacle.TRAP)
     # Comprobar si el nuevo GameObject "rock" colisiona con todos los anteriores
@@ -103,24 +103,25 @@ while running:
         if keys[pygame.K_s]:  # Si la tecla "s" es presionada, movemos hacia abajo.
             player.move_character_down(game_objects_list, 10)
 
-        #if event.type == pygame.KEYUP: Usado para verificar si está registrando correctamente cuandos e levanta la tecla.
+        #if event.type == pygame.KEYUP: Usado para verificar si está registrando correctamente cuando se levanta la tecla.
             #print("Tecla levantada")
 
-        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE: # salir pulsando X de cierre o ESC.
+        # salir haciendo clic en la X de cierre o ESC.
+        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             running = False #en caso de este evento sale del bucle con False
 
     # Comprobar si el personaje colisiona con la llave
     if not key_collected and player.get_rect().colliderect(key.get_rect()):
-        print("¡Palanca accionada!")
-        key_collected = True
+        print("¡Palanca accionada!") #Avisa de que hemos colisionado al entrar en el rectángulo de la llave
+        key_collected = True # Cambia a True el estado de la recogida de llave
         key.use()  # Marca la llave como usada
         exit_door.open_door()  # Abre la puerta de salida
         print("¡Valla de salida abierta!")
-        exit_door.update_image()
+        exit_door.update_image() #Debería actualizar la imagen de la puerta de salida para mostrarla abierta, no consigo que funcione.
 
     if player.get_rect().colliderect(exit_door.get_rect()):
         if not puerta_alcanzada:
-            print("Puerta de salida alcanzada")
+            print("Puerta de salida alcanzada") # Se muestra en consola cuando hemos cruzado la valla de salida una vez abierta.
             print("FINISH HIM! PRESS ESC")
             puerta_alcanzada = True
 
