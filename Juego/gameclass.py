@@ -8,6 +8,7 @@
 import pygame
 from enum import Enum
 
+# Creamos la clase Parent para construir los objetos en pantalla.
 class GameObject:
     #constructor
     def __init__(self, tag, screen, pos_x=0, pos_y=0, image="Pink_Monster.png"):
@@ -38,11 +39,11 @@ class GameObject:
     def move_right(self, x=5):
         if self.__rect.right+x < self.__screen.get_width(): #para que no se mueva más allá del 800 en este caso que es el ancho del screen
             self.__rect.move_ip(x, 0)
-
+# Mover a la izquierda el GameObject
     def move_left(self, x=5):
        if (self.__rect.left-x) > 0:
             self.__rect.move_ip(-x, 0)
-
+# Mover hacia abajo el GameObject
     def move_down(self, y=5):
         if (self.__rect.bottom+y) < self.__screen.get_height():
             self.__rect.move_ip(0, y)
@@ -64,8 +65,8 @@ class GameObject:
     def get_rect(self):
         return self.__rect
 
-# Class Character para nuestro personaje.
 
+# Class Character para nuestro personaje.
 class Character(GameObject): # sería la clase Child que hereda de la parent (GameObject)
     # Constructor
     def __init__(self, tag, screen, pos_x=0, pos_y=0, image="Pink_Monster.png", vida=3):
@@ -73,7 +74,6 @@ class Character(GameObject): # sería la clase Child que hereda de la parent (Ga
 
 
 # Función para la comprobación de colisión entre objetos. Toma como referencia al character para comprobar, no al mapa.
-
     def __comprobar_colision(self, game_objects_list):
         for obj in game_objects_list:
             if obj is not self and obj.get_rect().colliderect(self.get_rect()):
@@ -104,40 +104,39 @@ class Character(GameObject): # sería la clase Child que hereda de la parent (Ga
         if self.__comprobar_colision(game_objects_list) == True:
             super().move_up(y)
 
-# Class Obstacle
-# Atributo:
-# - damage (daño)
+
+# distinguimos con la siguiente lista si se trata de una trampa o no.
 class TypeObstacle(Enum):
     FURNITURE = 1
     TRAP = 2
 
+# Clase child para los obstáculos que hereda de la parent GameObject.
 class Obstacle(GameObject):
     def __init__(self, tag, screen, pos_x=0, pos_y=0, image="Pink_Monster.png", type_obstacle = TypeObstacle.FURNITURE, damage=0):
         super().__init__(tag,screen,pos_x,pos_y,image)
         #self.__damage = 0 if type_obstacle == TypeObstacle.FURNITURE else 1 ## ES OTRA FORMA DE PONER LO SIGUIENTE:
-        if type_obstacle == TypeObstacle.TRAP:
+        if type_obstacle == TypeObstacle.TRAP: # Atributo: Damage (daño) por si quisiéramos añadir daño al colisionar con las rocas
             self.__damage = 1
         else:
             self.__damage = 0
 
+# Lista para distinguir si la puerta es de entrada o de salida.
 class TypeDoor(Enum):
     ENTRANCE = 1
     EXIT = 2
 
+# Clase child para controlar las puertas que hereda de GameObject.
 class Door(GameObject):
-    def __init__(self, tag, screen, pos_x=0, pos_y=0, image="doorshut.png", door_type=TypeDoor.ENTRANCE, is_open=False):
+    def __init__(self, tag, screen, pos_x=0, pos_y=0, image="doorshut.png", door_type=TypeDoor.ENTRANCE, is_open=False): #la puerta está cerrada si no se indica lo contrario.
         super().__init__(tag, screen, pos_x, pos_y, image)
         self.door_type = door_type
         self.is_open = is_open
-        self.animation_frames = []
-        self.current_frame_index = 0
-        self.animation_complete = False
         self.update_image()
-
+    # Función para cambiar el estado de la puerta a abierta.
     def open_door(self):
         self.is_open = True
         self.update_image()
-
+    # Función para cambiar el estado de la puerta a cerrada.
     def close_door(self):
         self.is_open = False
         self.update_image()
@@ -149,10 +148,11 @@ class Door(GameObject):
         else:
             self.set_image_door("doorshut.png")
 
+# Clase child para controlar la llave, en este caso palanca, que abrirá la puerta de salida. Hereda de la parent GameObject.
 class Key(GameObject):
     def __init__(self, tag, screen, pos_x=None, pos_y=None, image="lever.png", used=False):
         super().__init__(tag, screen, pos_x, pos_y, image)
         self.used = used
-
+    # Función para marcar la palaca como usada y permitir que se abra la puerta de salida.
     def use(self):
         self.used = True
