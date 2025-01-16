@@ -34,7 +34,7 @@ game_objects_list.append(entrance_door)
 game_objects_list.append(exit_door)
 
 # Añadir una llave al mapa
-key = Key("palanca", screen, width -100, height -100,"lever.png", used=False)
+key = Key("palanca", screen, width -600, height -100,"lever.png", used=False)
 game_objects_list.append(key)
 
 # Variables para controlar si la llave ha sido recogida y si hemos pasado la salida
@@ -42,7 +42,7 @@ key_collected = False
 puerta_alcanzada = False
 
 # Por último, añadimos un número de rocas al mapa, para que haga al comprobación de si colisiona con el resto de rectángulos antes de aparecer.
-num_rocks = 5
+num_rocks = 10
 for id_rock in range(num_rocks):
     rock = Obstacle(f"rock{id_rock}", screen, random.randint(20, width -20), random.randint(20, height -20), "rock.png", TypeObstacle.TRAP)
     # Comprobar si el nuevo GameObject "rock" colisiona con todos los anteriores
