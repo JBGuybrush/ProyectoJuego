@@ -33,7 +33,7 @@ Teniendo Python instalado, ejecutar los siguientes comandos:
 Inicia el juego
 
 ```bash
-  npm python game.py
+ python game.py
 ```
 
 
