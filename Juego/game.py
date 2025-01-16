@@ -34,7 +34,7 @@ game_objects_list.append(entrance_door)
 game_objects_list.append(exit_door)
 
 # Añadir una llave al mapa
-key = Key("palanca", screen, random.randint(50, width - 50), random.randint(50, height - 50), "lever.png", used=False)
+key = Key("palanca", screen, width -100, height -100,"lever.png", used=False)
 game_objects_list.append(key)
 
 # Variables para controlar si la llave ha sido recogida y si hemos pasado la salida
